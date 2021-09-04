@@ -1,0 +1,271 @@
+psql -U postgres => open postgres terminal
+=====================================================
+\c postgres => change database
+=======================================================
+CREATE DATABASE database_name; => to create database
+======================================================
+\q => Postgres terminal exit
+==========================================================
+DROP DATABASE database_name; => to delete database
+
+===To create tabele======================================
+CREATE TABLE customer(
+test(# customer_id INT,
+test(# store_id INT,
+test(# first_name VARCHAR(50),
+test(# last_name VARCHAR(50),
+test(# email VARCHAR(50),
+test(# address_id INT,
+test(# activebool BOOLEAN,
+test(# create_date DATE,
+test(# last_update TIMESTAMP,
+test(# active INT); 
+==================================================
+\d => to see description
+===================================================
+\d table_name => see table description
+===============================================
+Tabels with constraints=====
+CREATE TABLE customer(
+test(# customer_id INT NOT NULL PRIMARY KEY,
+test(# store_id INT NOT NULL,
+test(# first_name VARCHAR(50) NOT NULL,
+test(# last_name VARCHAR(50) NOT NULL,
+test(# email VARCHAR(50) NOT NULL,
+test(# address_id INT NOT NULL,
+test(# activebool BOOLEAN NOT NULL,
+test(# create_date DATE NOT NULL,
+test(# last_update TIMESTAMP NOT NULL,
+test(# active INT NOT NULL); 
+
+=========================================
+To rename an existing table, you use the ALTER TABLE statement as follows
+ALTER TABLE table_name
+RENAME TO new_table_name;
+======================================================
+insert the value into the table
+
+insert into customer (customer_id, store_id, first_name, last_name, email, address_id, activebool, create_date, last_update, active) values (1, '21-605-2589', 'Emylee', 'Kovelmann', 'Non-binary', 59, false, '7/7/2021', '9/6/2020', 67);
+
+=====================================
+To show first_name colomn
+SELECT first_name FROM customer;
+===============================================
+The following query returns the full names of all customers. It constructs the full name by concatenating the first name, space, and the last name:
+SELECT 
+   first_name || ' ' || last_name,
+   email
+FROM 
+   customer;
+=================================================
+In this syntax, the column_name is assigned an alias alias_name. The AS keyword is optional so you can omit it
+SELECT column_name AS alias_name
+FROM table_name; or 
+SELECT column_name alias_name
+FROM table_name;
+===================================================
+If you want to rename the last_name heading, you can assign it a new name using a column alias like this:
+SELECT 
+   first_name, 
+   last_name AS surname
+FROM customer;
+============================================================
+you can assign the expression first_name || ' ' || last_name a column alias e.g., full_name:
+SELECT
+    first_name || ' ' || last_name AS full_name
+FROM
+    customer;
+=================================================================
+If a column alias contains one or more spaces, you need to surround it with double quotes like this:
+
+SELECT
+    first_name || ' ' || last_name "full name"
+FROM
+    customer;
+=================================================================
+The following query uses the ORDER BY clause to sort customers by their first names in ascending order:([ASC | DESC])
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+ORDER BY
+	first_name ASC;
+=====================================================================
+The following statement selects the first name and last name from the customer table and sorts the rows by the first name in ascending order and last name in descending order:
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+ORDER BY
+	first_name ASC,
+	last_name DESC;
+========================================================================
+The LENGTH() function accepts a string and returns the length of that string.
+The following statement selects the first names and their lengths. It sorts the rows by the lengths of the first names:
+
+SELECT 
+	first_name,
+	LENGTH(first_name) len
+FROM
+	customer
+ORDER BY 
+	len DESC;
+===================================================================================
+The DISTINCT clause is used in the SELECT statement to remove duplicate rows from a result set.
+SELECT
+   DISTINCT column1
+FROM
+   table_name;
+=====================================================================================
+If you specify multiple columns, the DISTINCT clause will evaluate the duplicate based on the combination of values of these columns.
+SELECT
+   DISTINCT column1, column2
+FROM
+   table_name;
+=========================================================================================
+PostgreSQL also provides the DISTINCT ON (expression) to keep the “first” row of each group of duplicates using the following syntax:
+SELECT
+   DISTINCT ON (column1) column_alias,
+   column2
+FROM
+   table_name
+ORDER BY
+   column1,
+   column2;
+==================================================================================
+The following statement uses the WHERE clause customers whose first names are Jamie:
+SELECT
+	last_name,
+	first_name
+FROM
+	customer
+WHERE
+	first_name = 'Jamie';
+=======================================================
+The following example finds customers whose first name and last name are Jamie and rice by using the AND/OR logical operator to combine two Boolean expressions:
+SELECT
+	last_name,
+	first_name
+FROM
+	customer
+WHERE
+	first_name = 'Jamie' AND/OR
+        last_name = 'Rice';
+===================================================================
+the following statement returns customers whose first name is Ann, or Anne, or Annie:
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+WHERE 
+	first_name IN ('Ann','Anne','Annie');
+===============================================================
+To find a string that matches a specified pattern, you use the LIKE operator. The following example returns all customers whose first names start with the string Ann:
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+WHERE 
+	first_name LIKE 'Ann%'
+======================================================================================
+The following example finds customers whose first names start with the letter A and contains 3 to 5 characters by using the BETWEEN operator.
+The BETWEEN operator returns true if a value is in a range of values.
+SELECT
+	first_name,
+	LENGTH(first_name) name_length
+FROM
+	customer
+WHERE 
+	first_name LIKE 'A%' AND
+	LENGTH(first_name) BETWEEN 3 AND 5
+ORDER BY
+	name_length;
+=============================================================================================
+This example uses the LIMIT clause to get the first five films sorted by film_id:
+SELECT
+	film_id,
+	title,
+	release_year
+FROM
+	film
+ORDER BY
+	film_id
+LIMIT 5;
+===============================================================================================
+The FETCH clause is functionally equivalent to the LIMIT clause. If you plan to make your application compatible with other database systems, you should use the FETCH clause because it follows the standard SQL.
+The following query use the FETCH clause to select the first five rows
+select first_name, last_name from customer order by first_name fetch first 5 row only;
+========================================================================================================
+Suppose you want to know the rental information of customer id 1 and 2, you can use the IN operator in the WHERE clause as follows:
+SELECT customer_id,
+	rental_id,
+	return_date
+FROM
+	rental
+WHERE
+	customer_id IN (1, 2)
+ORDER BY
+	return_date DESC;
+===========================================================================================
+the following statement finds all rentals with the customer id is not 1 or 2.
+SELECT
+	customer_id,
+	rental_id,
+	return_date
+FROM
+	rental
+WHERE
+	customer_id NOT IN (1, 2);
+===================================================================================
+The following query use the BETWEEN operator to select payments whose amount is between 8 and 9
+SELECT
+	customer_id,
+	payment_id,
+	amount
+FROM
+	payment
+WHERE
+	amount BETWEEN 8 AND 9;
+========================================================================================
+you can use the PostgreSQL LIKE operator to match the first name of the customer with a string like this query
+SELECT
+	first_name,
+        last_name
+FROM
+	customer
+WHERE
+	first_name LIKE 'Jen%';
+=========================================================================================
+PostgreSQL supports the ILIKE operator that works like the LIKE operator. In addition, the ILIKE operator matches value case-insensitively. For example:
+SELECT
+	first_name,
+	last_name
+FROM
+	customer
+WHERE
+	first_name ILIKE 'BAR%';
+=================================================================================================
+PostgreSQL also provides some operators that act like the LIKE, NOT LIKE, ILIKE and NOT ILIKE operator as shown below:
+
+Operator	Equivalent
+~~	LIKE
+~~*	ILIKE
+!~~	NOT LIKE
+!~~*	NOT ILIKE
+=========================================================================================
+To find the contact who does not have a phone number you may come up with the following statement:
+SELECT
+    id,
+    first_name,
+    last_name,
+    email,
+    phone
+FROM
+    contacts
+WHERE
+    phone = NULL;
+==================================================================================
